@@ -18,7 +18,9 @@ class PasswordHasher:
 
     def __init__(self, schemes: list[str] | None = None, deprecated: str | None = None):
         if schemes is None:
-            schemes = ["bcrypt"]
+            # Use a widely-available and portable scheme by default for tests
+            # and environments where the bcrypt backend may not be present.
+            schemes = ["pbkdf2_sha256"]
         # Passlib expects `deprecated` to be a string or sequence when provided.
         # Only include it in the CryptContext call when it's not None.
         if deprecated is None:

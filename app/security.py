@@ -19,7 +19,12 @@ class PasswordHasher:
     def __init__(self, schemes: list[str] | None = None, deprecated: str | None = None):
         if schemes is None:
             schemes = ["bcrypt"]
-        self._pwd_context = CryptContext(schemes=schemes, deprecated=deprecated)
+        # Passlib expects `deprecated` to be a string or sequence when provided.
+        # Only include it in the CryptContext call when it's not None.
+        if deprecated is None:
+            self._pwd_context = CryptContext(schemes=schemes)
+        else:
+            self._pwd_context = CryptContext(schemes=schemes, deprecated=deprecated)
 
     def hash(self, raw_password: str) -> str:
         """Hash a raw password and return the encoded hash."""
